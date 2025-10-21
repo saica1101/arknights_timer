@@ -1,3 +1,10 @@
+<!-- Badges -->
+[![CI](https://github.com/saica1101/arknights_timer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/saica1101/arknights_timer/actions/workflows/ci.yml)
+[![Build](https://github.com/saica1101/arknights_timer/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/saica1101/arknights_timer/actions/workflows/build.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
+[![Windows](https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white)](#)
+[![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)](#)
+
 ## アークナイツタイマー (Arknights Timer)
 
 理性（Sanity）の回復時間を計算・表示し、満タンになったら通知する Flutter 製アプリです。Windows と Android をサポートします。
