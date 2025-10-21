@@ -1,0 +1,78 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Build target (android|web|windows)
+        required: true
+        default: web
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: web
+          - os: ubuntu-latest
+            target: android
+          - os: windows-latest
+            target: windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Cache pub
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            ${{ runner.os == 'Windows' && 'C:/Users/runneradmin/AppData/Local/Pub/Cache' || '' }}
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      - name: Enable desktop (Windows)
+        if: matrix.target == 'windows'
+        shell: bash
+        run: |
+          flutter config --enable-windows-desktop
+
+      - name: Build ${{ matrix.target }}
+        shell: bash
+        run: |
+          case "${{ matrix.target }}" in
+            android)
+              flutter build apk --release --split-per-abi
+              ;;
+            web)
+              flutter build web --release --base-href "/arknights_timer/"
+              ;;
+            windows)
+              flutter build windows --release
+              ;;
+          esac
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.target }}-${{ github.ref_name }}
+          path: |
+            build/app/outputs/**/*.apk
+            build/web/**
+            build/windows/**/*.zip
