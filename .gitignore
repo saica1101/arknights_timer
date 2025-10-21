@@ -57,6 +57,9 @@ macos/Runner.xcworkspace/
 .vs/
 linux/flutter/ephemeral/
 
+# Ensure Windows runner manifest is tracked (override any global ignore for *.manifest)
+!/windows/runner/runner.exe.manifest
+
 # ---- Optional secrets (uncomment if used) ----
 # android/key.properties
 # **/*.keystore
