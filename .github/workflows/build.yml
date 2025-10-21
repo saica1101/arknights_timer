@@ -2,11 +2,6 @@ name: Build
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: Build target (android|web|windows)
-        required: true
-        default: web
   push:
     tags:
       - 'v*.*.*'
@@ -18,8 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            target: web
           - os: ubuntu-latest
             target: android
           - os: windows-latest
@@ -34,12 +27,35 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Setup Java (Android only)
+        if: matrix.target == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK (Android only)
+        if: matrix.target == 'android'
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android licenses (Android only)
+        if: matrix.target == 'android'
+        shell: bash
+        run: yes | sdkmanager --licenses >/dev/null
+
       - name: Cache pub
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.pub-cache
-            ${{ runner.os == 'Windows' && 'C:/Users/runneradmin/AppData/Local/Pub/Cache' || '' }}
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Cache pub (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: C:/Users/runneradmin/AppData/Local/Pub/Cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: |
             ${{ runner.os }}-pub-
@@ -60,15 +76,16 @@ jobs:
             android)
               flutter build apk --release --split-per-abi
               ;;
-            web)
-              flutter build web --release --base-href "/arknights_timer/"
-              ;;
             windows)
               flutter build windows --release
-              # Bundle the Windows runner output as zip
-              powershell -Command "Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath build/windows/ArknightsTimer-windows.zip"
               ;;
           esac
+
+      - name: Zip Windows artifact
+        if: matrix.target == 'windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "build/windows/ArknightsTimer-windows.zip"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -76,5 +93,5 @@ jobs:
           name: build-${{ matrix.target }}-${{ github.ref_name }}
           path: |
             build/app/outputs/**/*.apk
-            build/web/**
             build/windows/**/*.zip
+          if-no-files-found: ignore
