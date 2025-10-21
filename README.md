@@ -146,7 +146,7 @@ windows/
 
 ## ライセンス
 
-- **GNU General Public License version 3**(GPLv3)
+本プロジェクトは GNU General Public License v3.0（GPLv3）の下で配布されています。詳細はリポジトリ直下の [LICENSE](./LICENSE) をご確認ください。
 
 ---
 
