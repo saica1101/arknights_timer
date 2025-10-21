@@ -6,6 +6,7 @@
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)](#)
 
 ## アークナイツタイマー (Arknights Timer)
+![アークナイツタイマー](./app_image.png "アークナイツタイマー")
 
 理性（Sanity）の回復時間を計算・表示し、満タンになったら通知する Flutter 製アプリです。Windows と Android をサポートします。
 
