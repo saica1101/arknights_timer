@@ -20,7 +20,7 @@
 
 ---
 ## インストール
-1. [Release]から最新の物をダウンロード
+1. [Release](https://github.com/saica1101/arknights_timer/releases) から最新の物をダウンロード
 2. 解凍して中に含まれている「ArknightsTimer.exe」を実行
 ---
 
