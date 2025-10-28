@@ -20,6 +20,9 @@ class StaminaProgressRing extends StatelessWidget {
     final foreground = isDark
         ? const Color(0xFF0085FF) // AppColors.progressRingDark
         : const Color(0xFFD4EAF7); // AppColors.progressRingLight
+    final bgcolor = isDark
+        ? const Color(0xFF9E9E9E) // AppColors.progressRingDark
+        : const Color(0xE1FFFFFF); // AppColors.progressRingLight
     final track = Theme.of(context).cardColor.withValues(alpha: 0.3);
     return Stack(
       alignment: Alignment.center,
@@ -43,7 +46,7 @@ class StaminaProgressRing extends StatelessWidget {
                     value: v,
                     strokeWidth: 10,
                     valueColor: AlwaysStoppedAnimation(foreground),
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: bgcolor,
                   ),
                 ],
               );
