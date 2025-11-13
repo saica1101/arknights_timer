@@ -1,6 +1,7 @@
 <!-- Badges -->
 ![Flutter](https://img.shields.io/badge/Flutter-3.38.0-02569B?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.10.0-0175C2?logo=dart&logoColor=white)
+[![Version](https://img.shields.io/badge/Version-1.1.0-brightgreen)](https://github.com/saica1101/valorant-mouse-sensitivity-utility/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 [![Windows](https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white)](#)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)](#)
