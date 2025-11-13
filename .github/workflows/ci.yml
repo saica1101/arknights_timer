@@ -10,18 +10,16 @@ permissions:
 
 jobs:
   analyze_test:
-    name: CI (${{ matrix.label }})
-    runs-on: ${{ matrix.os }}
+    name: CI (${{ matrix.target }})
+    runs-on: ${{ matrix.runs_on }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            label: hosted-linux
-            use_manual_flutter: false
-          - os: [self-hosted, Windows]
-            label: local-windows
-            use_manual_flutter: true
+          - runs_on: [self-hosted, Windows]
+            target: windows
+          - runs_on: [self-hosted, Windows]
+            target: android
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,4 +78,4 @@ jobs:
 
       - name: Summary
         if: always()
-        run: echo "Analysis & tests completed for ${{ matrix.label }}."
+        run: echo "Analysis & tests completed for ${{ matrix.target }}."
