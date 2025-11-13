@@ -24,10 +24,10 @@ jobs:
 
       - name: Setup Flutter (Windows manual)
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: powershell
         run: |
           $jsonUrl = 'https://storage.googleapis.com/flutter_infra_release/releases/releases_windows.json'
-          $releases = Invoke-RestMethod -Uri $jsonUrl -UseBasicParsing
+          $releases = Invoke-RestMethod -Uri $jsonUrl
           $baseUrl = $releases.base_url
           $stableHash = $releases.current_release.stable
           $release = $releases.releases | Where-Object { $_.hash -eq $stableHash }
@@ -35,14 +35,20 @@ jobs:
           $archivePath = $release.archive
           $url = "$baseUrl/$archivePath"
           Write-Host "Downloading Flutter SDK: $url"
-          $zipPath = Join-Path $env:RUNNER_TEMP 'flutter-sdk.zip'
+          $tempRoot = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } elseif ($env:TEMP) { $env:TEMP } else { Join-Path $PWD 'temp' }
+          if (-not (Test-Path $tempRoot)) { New-Item -ItemType Directory -Path $tempRoot | Out-Null }
+          $zipPath = Join-Path $tempRoot 'flutter-sdk.zip'
           Invoke-WebRequest -Uri $url -OutFile $zipPath
-          $dest = $env:RUNNER_TEMP
+          $dest = $tempRoot
           Expand-Archive -Path $zipPath -DestinationPath $dest -Force
           $flutterBin = Join-Path $dest 'flutter/bin'
           if (-not (Test-Path $flutterBin)) { throw "Flutter bin not found at $flutterBin" }
           # Add flutter/bin to PATH for subsequent steps
-          Add-Content -Path $env:GITHUB_PATH -Value $flutterBin
+          if ($env:GITHUB_PATH) {
+            Add-Content -Path $env:GITHUB_PATH -Value $flutterBin
+          } else {
+            $env:Path = "$flutterBin;$env:Path"
+          }
           flutter --version
 
       - name: Setup Flutter (non-Windows)
@@ -77,7 +83,7 @@ jobs:
 
       - name: Create Windows ZIP
         if: ${{ matrix.target == 'windows' }}
-        shell: pwsh
+        shell: powershell
         run: |
           $out = 'build/windows/ArknightsTimer-windows.zip'
           $srcDir = 'build/windows/x64/runner/Release'
@@ -113,7 +119,7 @@ jobs:
 
       - name: Normalize APK filename (Windows PowerShell)
         if: ${{ matrix.target == 'android' && runner.os == 'Windows' }}
-        shell: pwsh
+        shell: powershell
         run: |
           $candidates = @(
             'build/app/outputs/flutter-apk/app-release.apk',
