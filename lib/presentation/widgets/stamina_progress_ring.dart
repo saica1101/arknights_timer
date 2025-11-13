@@ -19,10 +19,10 @@ class StaminaProgressRing extends StatelessWidget {
     final isDark = scheme.brightness == Brightness.dark;
     final foreground = isDark
         ? const Color(0xFF0085FF) // AppColors.progressRingDark
-        : const Color(0xFFD4EAF7); // AppColors.progressRingLight
+        : const Color(0xFF71C4EF); // AppColors.progressRingLight
     final bgcolor = isDark
         ? const Color(0xFF9E9E9E) // AppColors.progressRingDark
-        : const Color(0xE1FFFFFF); // AppColors.progressRingLight
+        : const Color(0xFFB6CCD8); // AppColors.progressRingLight
     final track = Theme.of(context).cardColor.withValues(alpha: 0.3);
     return Stack(
       alignment: Alignment.center,
